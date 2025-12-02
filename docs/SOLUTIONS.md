@@ -20,3 +20,28 @@ The dial is circular (0-99) and rotations wrap around. We start at position 50.
 ## Answers
 - Part 1: 964
 - Part 2: 5872
+
+---
+
+# AOC 2025 Day 2: Gift Shop
+
+## Problem
+Find and sum all invalid product IDs within given ranges. An invalid ID is one made of a digit sequence repeated at least twice.
+
+## Solution
+
+**Part 1**: Find IDs made of a sequence repeated exactly twice
+- Parse comma-separated ranges in format "start-end"
+- For each number in range, convert to string and check if it has even length
+- Check if first half equals second half (e.g., 55, 6464, 123123)
+- Sum all invalid IDs found
+
+**Part 2**: Find IDs made of a sequence repeated at least twice
+- Try all possible pattern lengths from 1 to len/2
+- For each length that divides the total length evenly, check if the entire string is that pattern repeated 2+ times
+- This catches patterns like: 1111111 (1 seven times), 123123123 (123 three times), 1212121212 (12 five times), etc.
+- Sum all invalid IDs found
+
+## Answers
+- Part 1: 19574776074
+- Part 2: 25912654282
