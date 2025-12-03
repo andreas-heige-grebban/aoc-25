@@ -9,35 +9,49 @@ const readInput = (filePath: string): BankArray => {
   return content.split("\n").filter((line: string) => line.trim() !== "");
 };
 
-// Find the maximum joltage by selecting any two positions and forming the largest number
-const findMaxJoltage = (bank: string): Joltage => {
-  let maxJoltage = 0;
-  
-  // Try all pairs of positions (i, j) where i < j
-  for (let i = 0; i < bank.length; i++) {
-    for (let j = i + 1; j < bank.length; j++) {
-      const digit1 = parseInt(bank[i]);
-      const digit2 = parseInt(bank[j]);
-      
-      // Form a number: digit at i is tens, digit at j is ones
-      const joltage = digit1 * 10 + digit2;
-      maxJoltage = Math.max(maxJoltage, joltage);
+// Find the maximum joltage by selecting a specified number of positions
+const findMaxJoltage = (bank: string, numDigitsToSelect: number): bigint => {
+  if (bank.length < numDigitsToSelect) {
+    return 0n;
+  }
+
+  let result = "";
+  let startIdx = 0;
+
+  for (let i = 0; i < numDigitsToSelect; i++) {
+    // Determine the window to search for the current best digit
+    const endIdx = bank.length - (numDigitsToSelect - i);
+    
+    let bestDigit = -1;
+    let bestDigitIdx = -1;
+
+    // Find the largest digit in the current window
+    for (let j = startIdx; j <= endIdx; j++) {
+      const digit = parseInt(bank[j]);
+      if (digit > bestDigit) {
+        bestDigit = digit;
+        bestDigitIdx = j;
+      }
     }
+    
+    result += bestDigit.toString();
+    startIdx = bestDigitIdx + 1;
   }
   
-  return maxJoltage;
+  return BigInt(result);
 };
 
 // Main function: process all battery banks and sum their maximum joltages
 const main = (): void => {
   const banks: BankArray = readInput("input.txt");
-  let totalJoltage: Joltage = 0;
 
-  for (const bank of banks) {
-    totalJoltage += findMaxJoltage(bank);
-  }
+  const calculateAndPrintTotal = (numDigits: number) => {
+    const total = banks.reduce((sum, bank) => sum + findMaxJoltage(bank, numDigits), 0n);
+    console.log(`Total Joltage (${numDigits} digits):`, total.toString());
+  };
 
-  console.log(totalJoltage);
+  calculateAndPrintTotal(2);  // Part 1
+  calculateAndPrintTotal(12); // Part 2
 };
 
 main();

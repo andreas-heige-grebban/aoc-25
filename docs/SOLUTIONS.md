@@ -45,3 +45,29 @@ Find and sum all invalid product IDs within given ranges. An invalid ID is one m
 ## Answers
 - Part 1: 19574776074
 - Part 2: 25912654282
+
+---
+
+# AOC 2025 Day 3: Lobby Escalator
+
+## Problem
+From banks of batteries (lines of digits), find the largest number that can be formed by selecting a specific number of digits while preserving their original order.
+
+## Solution
+The core of the problem is to find the largest possible number by selecting N digits from a string without reordering them. This was solved with a generic, greedy function `findMaxJoltage(bank, numDigits)`.
+
+The function iterates `numDigits` times. In each iteration `i`, it scans for the largest possible digit it can pick from the remaining part of the string, while ensuring there are still enough characters left for the rest of the digits to be selected. This largest digit is appended to the result, and the search for the next digit continues from the position immediately after the picked digit.
+
+`BigInt` was necessary to handle the large numbers involved, especially in Part 2.
+
+**Part 1**: Select exactly 2 digits from each bank.
+- The `findMaxJoltage` function is called with `numDigits = 2`.
+- The results from all banks are summed up.
+
+**Part 2**: Select exactly 12 digits from each bank.
+- The `findMaxJoltage` function is called with `numDigits = 12`.
+- The results are summed using `BigInt` to prevent overflow.
+
+## Answers
+- Part 1: 17207
+- Part 2: 170997883706617
