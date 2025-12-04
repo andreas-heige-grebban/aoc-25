@@ -71,3 +71,40 @@ The function iterates `numDigits` times. In each iteration `i`, it scans for the
 ## Answers
 - Part 1: 17207
 - Part 2: 170997883706617
+
+---
+
+# AOC 2025 Day 4: Paper Warehouse
+
+## Problem
+Count paper rolls (`@`) that are accessible by forklifts in a warehouse grid. A roll is accessible if it has fewer than 4 adjacent rolls (including diagonals).
+
+## Solution
+This problem required counting neighbors in a 2D grid with proper bounds checking.
+
+**Part 1**: Count all rolls with fewer than 4 adjacent neighbors
+- Iterate through every cell in the grid
+- For each `@`, count its adjacent neighbors in all 8 directions (including diagonals)
+- A roll is accessible if it has fewer than 4 neighbors
+- Implemented with clear helper functions: `countAdjacentRolls` and `countAccessibleRolls`
+
+**Part 2**: Simulate iterative removal of accessible rolls
+- This is a simulation problem: repeatedly find and remove accessible rolls until none remain
+- Each iteration:
+  1. Find all rolls with < 4 neighbors (using `findRemovableRolls`)
+  2. If none found, stop
+  3. Add count to total and remove them from grid
+  4. Repeat (newly isolated rolls may become accessible)
+- Required a mutable grid copy (`[][]byte`) to allow in-place modifications
+- Used helper function `countNeighbors` to check adjacency on the mutable grid
+- The key insight is that removing rolls can expose new rolls that were previously inaccessible
+
+## Implementation Notes
+- Refactored for clarity by extracting nested logic into focused helper functions
+- Used descriptive variable names throughout (e.g., `adjacentRollsCount` instead of `adj`)
+- Part 2 required careful separation of concerns: finding removable rolls vs. actually removing them
+
+## Answers
+- Part 1: 1416
+- Part 2: 9086
+
