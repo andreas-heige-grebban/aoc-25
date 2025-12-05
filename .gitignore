@@ -4,3 +4,5 @@ aoc-25-02/aoc-25-02
 aoc-25-04/aoc-25-04
 aoc-25-04/main
 .vscode/*
+/node_modules
+aoc-25-05/node_modules
