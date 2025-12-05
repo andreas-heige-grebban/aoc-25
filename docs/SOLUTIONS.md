@@ -108,3 +108,35 @@ This problem required counting neighbors in a 2D grid with proper bounds checkin
 - Part 1: 1416
 - Part 2: 9086
 
+---
+
+# AOC 2025 Day 5: Cafeteria
+
+## Problem
+The Elves need help with their new inventory management system. Given a database with fresh ingredient ID ranges and a list of available ingredient IDs, determine which ingredients are fresh.
+
+## Solution
+TypeScript solution with a focus on clean, functional code.
+
+**Part 1**: Count available ingredients that are fresh
+- Parse the input into ranges (e.g., `3-5` means IDs 3, 4, 5 are fresh) and available IDs
+- For each available ID, check if it falls within any fresh range
+- Count how many available IDs are fresh using `filter` and `some`
+
+**Part 2**: Count all unique IDs covered by the fresh ranges
+- Initial naive approach (using a Set to store all IDs) failed due to huge ranges exceeding Set max size
+- Solution: Merge overlapping ranges, then sum their sizes
+- Sort ranges by start position
+- Merge adjacent/overlapping ranges (if previous end >= current start - 1)
+- Sum up `(end - start + 1)` for each merged range
+
+## Implementation Notes
+- Started with explicit for loops and types, then refactored to functional style
+- Used `reduce` for merging ranges and summing totals
+- Set up monorepo structure with shared ESLint and TypeScript config at root level
+- Final code: ~55 lines with single-expression arrow functions
+
+## Answers
+- Part 1: 733
+- Part 2: 345821388687084
+
