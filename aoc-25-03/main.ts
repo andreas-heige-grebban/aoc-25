@@ -1,6 +1,6 @@
 // Type definitions
 type BankArray = string[];
-type Joltage = number;
+type Joltage = bigint;
 
 // Read and parse the input file
 const readInput = (filePath: string): BankArray => {
@@ -10,7 +10,7 @@ const readInput = (filePath: string): BankArray => {
 };
 
 // Find the maximum joltage by selecting a specified number of positions
-const findMaxJoltage = (bank: string, numDigitsToSelect: number): bigint => {
+const findMaxJoltage = (bank: string, numDigitsToSelect: number): Joltage => {
   if (bank.length < numDigitsToSelect) {
     return 0n;
   }
@@ -45,8 +45,8 @@ const findMaxJoltage = (bank: string, numDigitsToSelect: number): bigint => {
 const main = (): void => {
   const banks: BankArray = readInput("input.txt");
 
-  const calculateAndPrintTotal = (numDigits: number) => {
-    const total = banks.reduce((sum, bank) => sum + findMaxJoltage(bank, numDigits), 0n);
+  const calculateAndPrintTotal = (numDigits: number): void => {
+    const total: Joltage = banks.reduce((sum: Joltage, bank: string) => sum + findMaxJoltage(bank, numDigits), 0n);
     console.log(`Total Joltage (${numDigits} digits):`, total.toString());
   };
 
