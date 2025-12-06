@@ -140,3 +140,37 @@ TypeScript solution with a focus on clean, functional code.
 - Part 1: 733
 - Part 2: 345821388687084
 
+---
+
+# AOC 2025 Day 6: Trash Compactor
+
+## Problem
+Parse a worksheet containing math problems arranged vertically in columns. Each problem has numbers stacked vertically with an operator (`+` or `*`) at the bottom. Problems are separated by columns of spaces.
+
+## Solution
+TypeScript solution parsing a 2D grid of characters into math problems.
+
+**Part 1**: Read numbers horizontally (left to right per row)
+- Split input into lines and identify problem columns (non-empty columns)
+- Group consecutive non-space columns as problems
+- For each problem: extract horizontal digits per row as numbers, last row contains operator
+- Apply operator and sum all results
+
+**Part 2**: Read numbers column-by-column (top digit = most significant)
+- Same column grouping, but read digits vertically within each problem column
+- For each column in a problem (right to left), build number from top to bottom
+- Example: column with `1`, `4`, `6` vertically = 146
+- Apply operator and sum all results
+
+## Implementation Notes
+- Used TypeScript types: `type Operator = '+' | '*'`, `type Problem = { numbers: number[]; operator: Operator }`, `type ParsedInput` for shared state
+- Extracted shared parsing into `parseInput()` returning `ParsedInput` with `lines`, `operatorLine`, `numberLines`, `problemRanges`, `width`, `paddedNumberLines`
+- `getOperator()` helper extracts operator detection
+- Part-specific parsers (`parseProblemsPart1`, `parseProblemsPart2`) use destructuring from `ParsedInput`
+- Functional approach with `map`, `filter`, `reduce`
+- Tested with both `tsx` (fast dev) and `tsgo` (Go-based compiler)
+
+## Answers
+- Part 1: 5361735137219
+- Part 2: 11744693538946
+
