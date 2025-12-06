@@ -3,6 +3,8 @@ aoc-25-02/aoc-25-02
 .vscode/settings.json
 aoc-25-04/aoc-25-04
 aoc-25-04/main
+aoc-25-06/main.js
+aoc-25-06/dist
 .vscode/*
 /node_modules
 aoc-25-05/node_modules
