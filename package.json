@@ -5,7 +5,8 @@
   "private": true,
   "workspaces": [
     "aoc-25-03",
-    "aoc-25-05"
+    "aoc-25-05",
+    "aoc-25-06"
   ],
   "scripts": {
     "lint": "eslint . --ext .ts",
