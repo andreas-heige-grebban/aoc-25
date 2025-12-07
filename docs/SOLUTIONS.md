@@ -18,8 +18,13 @@ The dial is circular (0-99) and rotations wrap around. We start at position 50.
 - Add end-of-rotation zeros to intermediate count
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 964
 - Part 2: 5872
+
+</details>
 
 ---
 
@@ -43,8 +48,13 @@ Find and sum all invalid product IDs within given ranges. An invalid ID is one m
 - Sum all invalid IDs found
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 19574776074
 - Part 2: 25912654282
+
+</details>
 
 ---
 
@@ -69,8 +79,13 @@ The function iterates `numDigits` times. In each iteration `i`, it scans for the
 - The results are summed using `BigInt` to prevent overflow.
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 17207
 - Part 2: 170997883706617
+
+</details>
 
 ---
 
@@ -105,8 +120,13 @@ This problem required counting neighbors in a 2D grid with proper bounds checkin
 - Part 2 required careful separation of concerns: finding removable rolls vs. actually removing them
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 1416
 - Part 2: 9086
+
+</details>
 
 ---
 
@@ -137,8 +157,13 @@ TypeScript solution with a focus on clean, functional code.
 - Final code: ~55 lines with single-expression arrow functions
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 733
 - Part 2: 345821388687084
+
+</details>
 
 ---
 
@@ -171,8 +196,13 @@ TypeScript solution parsing a 2D grid of characters into math problems.
 - Tested with both `tsx` (fast dev) and `tsgo` (Go-based compiler)
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 5361735137219
 - Part 2: 11744693538946
+
+</details>
 
 ---
 
@@ -212,5 +242,10 @@ Starting from Part 2, we adopted Test-Driven Development (TDD) for this reposito
 - TDD helps catch edge cases early and makes refactoring safer—especially useful when optimizing AoC solutions
 
 ## Answers
+<details>
+<summary>Today's Results</summary>
+
 - Part 1: 1587
 - Part 2: 5748679033029
+
+</details>
