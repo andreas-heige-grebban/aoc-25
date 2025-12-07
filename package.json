@@ -12,6 +12,8 @@
   "scripts": {
     "test": "vitest",
     "test:run": "vitest run",
+    "test:go": "for d in $(cat test-paths.json | grep -o '\"aoc-25-[0-9]*\"' | tr -d '\"'); do (cd $d && go test) || exit 1; done",
+    "test:all": "vitest run && npm run test:go",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
