@@ -1,8 +1,9 @@
 import type { Column, TimelineCount, Grid, Manifold, Beams, RowResult, SimState, SimResult } from './types.ts';
+import { parseLines, sumMapValues } from '../utils';
 
 /** Parse input string into a Manifold structure, finding grid dimensions and start position */
 export const parseInput = (input: string): Manifold => {
-  const grid: Grid = input.split('\n').filter((line): line is string => line.length > 0);
+  const grid: Grid = parseLines(input);
   return {
     grid,
     width: Math.max(...grid.map((line: string): number => line.length)),
@@ -33,13 +34,9 @@ export const processRow = (beams: Beams, line: string, width: number): RowResult
   return { beams: newBeams, splitPositions };
 };
 
-/** Sum all timeline counts in a beam map */
-export const sumValues = (map: Beams): TimelineCount => 
-  [...map.values()].reduce((a: TimelineCount, b: TimelineCount): TimelineCount => a + b, 0);
-
 /** Simulate beams through the entire manifold, returning total splits (Part 1) and timelines (Part 2) */
 export const simulate = ({ grid, startCol, width }: Manifold): SimResult => (
-  ({ beams, splits }: SimState): SimResult => ({ splits, timelines: sumValues(beams) })
+  ({ beams, splits }: SimState): SimResult => ({ splits, timelines: sumMapValues(beams) })
 )(grid.slice(1).map((line: string): string => line.padEnd(width)).reduce<SimState>(
   (state: SimState, line: string): SimState => state.beams.size === 0 ? state : 
     ((row: RowResult): SimState => ({ ...row, splits: state.splits + row.splitPositions }))(processRow(state.beams, line, width)),

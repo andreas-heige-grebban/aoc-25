@@ -1,3 +1,5 @@
+import { sum } from '../utils';
+
 export type Range = [number, number];
 
 export const parseRanges = (input: string): Range[] =>
@@ -26,4 +28,4 @@ export const countFreshAvailable = (ids: number[], ranges: Range[]): number =>
   ids.filter(id => isInRange(id, ranges)).length;
 
 export const countAllFresh = (ranges: Range[]): number =>
-  mergeRanges(ranges).reduce((sum, [start, end]) => sum + end - start + 1, 0);
+  sum(mergeRanges(ranges).map(([start, end]) => end - start + 1));

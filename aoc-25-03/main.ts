@@ -1,5 +1,5 @@
 import * as fs from 'fs';
-import { calculateTotal } from './solution.ts';
+import { calculateTotal } from './solution';
 
 const readInput = (filePath: string): string[] =>
   fs.readFileSync(filePath, 'utf-8').split('\n').filter(line => line.trim() !== '');

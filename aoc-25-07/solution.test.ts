@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseInput, getNewBeamCols, processRow, sumValues, simulate } from './solution';
+import { parseInput, getNewBeamCols, processRow, simulate } from './solution';
 
 const t = <T extends unknown[]>(cases: T[], fn: (...args: T) => void) => 
   cases.forEach(c => it(c[0] as string, () => fn(...c)));
@@ -31,11 +31,6 @@ describe('processRow', () => t([
   expect(r.splitPositions).toBe(splits);
   (exp as [number, number][]).forEach(([c, n]) => expect(r.beams.get(c)).toBe(n));
 }));
-
-describe('sumValues', () => t([
-  ['sums all counts', [[0, 1], [2, 3], [4, 5]], 9],
-  ['returns 0 for empty', [], 0],
-], (_, beams, exp) => expect(sumValues(new Map(beams as [number, number][]))).toBe(exp)));
 
 describe('simulate', () => t([
   ['simple split', '..S..\n.....\n..^..\n.....', 1, 2],

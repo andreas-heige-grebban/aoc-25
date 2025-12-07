@@ -1,3 +1,5 @@
+import { sum, product, parseLines } from '../utils';
+
 export type Operator = '+' | '*';
 export type Problem = { numbers: number[]; operator: Operator };
 export type ProblemRange = [number, number];
@@ -23,7 +25,7 @@ export const findProblemRanges = (lines: string[], width: number): ProblemRange[
 };
 
 export const parseInput = (input: string): ParsedInput => {
-  const lines = input.split('\n').filter(line => line.length > 0);
+  const lines = parseLines(input);
   const operatorLine = lines[lines.length - 1], numberLines = lines.slice(0, -1);
   const width = Math.max(...lines.map(l => l.length));
   const problemRanges = findProblemRanges(lines, width);
@@ -52,7 +54,7 @@ export const parseProblemsPart2 = ({ paddedNumberLines, operatorLine, problemRan
   });
 
 export const solveProblem = ({ numbers, operator }: Problem): number =>
-  operator === '+' ? numbers.reduce((a, b) => a + b, 0) : numbers.reduce((a, b) => a * b, 1);
+  operator === '+' ? sum(numbers) : product(numbers);
 
 export const solveWorksheet = (problems: Problem[]): number =>
-  problems.reduce((total, p) => total + solveProblem(p), 0);
+  sum(problems.map(solveProblem));
