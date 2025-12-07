@@ -1,12 +1,5 @@
 import { sum, product, parseLines } from '../utils';
-
-export type Operator = '+' | '*';
-export type Problem = { numbers: number[]; operator: Operator };
-export type ProblemRange = [number, number];
-export type ParsedInput = {
-  lines: string[]; operatorLine: string; numberLines: string[];
-  problemRanges: ProblemRange[]; width: number; paddedNumberLines: string[];
-};
+import type { Operator, Problem, Problems, ProblemRange, ParsedInput } from './types';
 
 export const findProblemRanges = (lines: string[], width: number): ProblemRange[] => {
   const paddedLines = lines.map(l => l.padEnd(width));
@@ -36,14 +29,14 @@ export const parseInput = (input: string): ParsedInput => {
 export const getOperator = (operatorLine: string, colStart: number, colEnd: number): Operator =>
   operatorLine.slice(colStart, colEnd).trim().includes('*') ? '*' : '+';
 
-export const parseProblemsPart1 = ({ numberLines, operatorLine, problemRanges }: ParsedInput): Problem[] =>
+export const parseProblemsPart1 = ({ numberLines, operatorLine, problemRanges }: ParsedInput): Problems =>
   problemRanges.map(([colStart, colEnd]) => ({
     numbers: numberLines.map(line => line.slice(colStart, colEnd).trim())
       .filter(s => s.length > 0).map(s => parseInt(s, 10)).filter(n => !isNaN(n)),
     operator: getOperator(operatorLine, colStart, colEnd)
   }));
 
-export const parseProblemsPart2 = ({ paddedNumberLines, operatorLine, problemRanges }: ParsedInput): Problem[] =>
+export const parseProblemsPart2 = ({ paddedNumberLines, operatorLine, problemRanges }: ParsedInput): Problems =>
   problemRanges.map(([colStart, colEnd]) => {
     const numbers: number[] = [];
     for (let col = colStart; col < colEnd; col++) {
@@ -56,5 +49,5 @@ export const parseProblemsPart2 = ({ paddedNumberLines, operatorLine, problemRan
 export const solveProblem = ({ numbers, operator }: Problem): number =>
   operator === '+' ? sum(numbers) : product(numbers);
 
-export const solveWorksheet = (problems: Problem[]): number =>
+export const solveWorksheet = (problems: Problems): number =>
   sum(problems.map(solveProblem));

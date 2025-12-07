@@ -1,7 +1,6 @@
-export type BankArray = string[];
-export type Joltage = bigint;
+import type { Bank, BankArray, Joltage, DigitCount } from './types';
 
-export const findMaxJoltage = (bank: string, numDigitsToSelect: number): Joltage => {
+export const findMaxJoltage = (bank: Bank, numDigitsToSelect: DigitCount): Joltage => {
   if (bank.length < numDigitsToSelect) return 0n;
   let result = '', startIdx = 0;
   for (let i = 0; i < numDigitsToSelect; i++) {
@@ -17,5 +16,5 @@ export const findMaxJoltage = (bank: string, numDigitsToSelect: number): Joltage
   return BigInt(result);
 };
 
-export const calculateTotal = (banks: BankArray, numDigits: number): Joltage =>
+export const calculateTotal = (banks: BankArray, numDigits: DigitCount): Joltage =>
   banks.reduce((sum, bank) => sum + findMaxJoltage(bank, numDigits), 0n);
