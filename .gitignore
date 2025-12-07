@@ -1,10 +1,14 @@
-aoc-25-01/aoc-25-01
-aoc-25-02/aoc-25-02
-.vscode/settings.json
-aoc-25-04/aoc-25-04
-aoc-25-04/main
-aoc-25-06/main.js
-.vscode/*
+# Go binaries
+solutions/aoc-25-01/aoc-25-01
+solutions/aoc-25-02/aoc-25-02
+solutions/aoc-25-04/aoc-25-04
+solutions/aoc-25-04/main
+
+# Compiled JS
+solutions/**/*.js
+
+# VS Code
+.vscode/
 
 # Dependencies
 node_modules/
