@@ -1,53 +1,25 @@
 import * as fs from 'fs';
+import type { SimResult, Timed } from './types.ts';
+import { parseInput, simulate } from './solution';
 
-type Manifold = { grid: string[]; startCol: number; width: number };
-type BeamResult = { splits: number; newCols: number[] };
-type SimState = { beams: Set<number>; splits: number };
-type Timed<T> = { result: T; time: number };
-
-const parseInput = (input: string): Manifold => {
-  const grid = input.split('\n').filter(line => line.length > 0);
-  return {
-    grid,
-    width: Math.max(...grid.map(l => l.length)),
-    startCol: grid[0].indexOf('S')
-  };
-}
-
-const processBeam = (col: number, line: string, width: number): BeamResult =>
-  line[col] === '^' ? { splits: 1, newCols: [col - 1, col + 1].filter(c => c >= 0 && c < width) }
-  : line[col] === '.' || line[col] === ' ' ? { splits: 0, newCols: [col] }
-  : { splits: 0, newCols: [] };
-
-const processRow = (beams: Set<number>, line: string, width: number): SimState => ({
-  splits: [...beams].filter(col => line[col] === '^').length,
-  beams: new Set([...beams].flatMap(col => processBeam(col, line, width).newCols))
-});
-
-const simulateBeams = ({ grid, startCol, width }: Manifold): number =>
-  grid.slice(1).map(line => line.padEnd(width)).reduce<SimState>(
-    (state, line) => state.beams.size === 0 ? state : {
-      beams: processRow(state.beams, line, width).beams,
-      splits: state.splits + processRow(state.beams, line, width).splits
-    },
-    { beams: new Set([startCol]), splits: 0 }
-  ).splits;
-
+/** Wrap a function to measure its execution time in milliseconds */
 const timed = <T>(fn: () => T): Timed<T> => {
-  const start = performance.now();
+  const start: number = performance.now();
   return { result: fn(), time: performance.now() - start };
-}
+};
 
+/** Main entry point: read input, run simulation, print results with timing */
 const main = (): void => {
-  const totalStart = performance.now();
+  const totalStart: number = performance.now();
   
-  const { result: input, time: readTime } = timed(() => fs.readFileSync('input.txt', 'utf-8'));
-  const { result: result1, time: executeTime } = timed(() => simulateBeams(parseInput(input)));
+  const { result: input, time: readTime }: Timed<string> = timed((): string => fs.readFileSync('input.txt', 'utf-8'));
+  const { result: { splits, timelines }, time: executeTime }: Timed<SimResult> = timed((): SimResult => simulate(parseInput(input)));
 
-  console.log('Part 1:', result1);
+  console.log('Part 1:', splits);
+  console.log('Part 2:', timelines);
   console.log(`\nFile Read: ${(readTime / 1000).toFixed(6)}s`);
   console.log(`Execution: ${(executeTime / 1000).toFixed(6)}s`);
   console.log(`Total: ${((performance.now() - totalStart) / 1000).toFixed(6)}s`);
-}
+};
 
 main();

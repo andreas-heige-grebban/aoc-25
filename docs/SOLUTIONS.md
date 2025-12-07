@@ -174,3 +174,43 @@ TypeScript solution parsing a 2D grid of characters into math problems.
 - Part 1: 5361735137219
 - Part 2: 11744693538946
 
+---
+
+# AOC 2025 Day 7: Laboratories
+
+## Problem
+Simulate tachyon beams passing through a manifold grid. A beam enters at `S` and moves downward. When hitting a splitter (`^`), the beam splits into two beams going left and right. Count splits (Part 1) and parallel timelines (Part 2).
+
+## Solution
+TypeScript solution with strict typing and functional patterns.
+
+**Part 1**: Count total splitter positions hit
+- Parse grid to find start column and dimensions
+- Simulate beams row by row, tracking positions in a `Map<Column, TimelineCount>`
+- Count unique splitter positions hit (not weighted by timeline count)
+
+**Part 2**: Count total parallel timelines (many-worlds interpretation)
+- Same simulation, but track how many timelines are at each position
+- When a beam splits, each timeline at that position creates two new timelines
+- Final answer is sum of all timeline counts after traversal
+
+## Implementation Notes
+- Separated types into `types.ts` with full JSDoc documentation
+- Domain types: `Column`, `TimelineCount`, `Grid`, `Manifold`, `Beams`, `RowResult`, `SimState`, `SimResult`
+- All types use `Readonly<>` and `ReadonlyMap<>` for immutability
+- Generic `Timed<T>` utility type for timing wrapper
+- Functional style with `reduce`, [IIFE patterns](https://developer.mozilla.org/en-US/docs/Glossary/IIFE) for clean one-liners
+- `timed()` helper wraps functions to measure execution time
+- Comments above each function explaining purpose
+
+## TDD Approach
+Starting from Part 2, we adopted Test-Driven Development (TDD) for this repository:
+- Set up **Vitest** for TypeScript tests and **Go's built-in testing** for Go solutions
+- Extracted solution logic into `solution.ts` with exported functions for testability
+- Created comprehensive test suites covering parsing, beam mechanics, and full simulation
+- Table-driven tests with a reusable `t()` helper for minimal boilerplate
+- TDD helps catch edge cases early and makes refactoring safer—especially useful when optimizing AoC solutions
+
+## Answers
+- Part 1: 1587
+- Part 2: 5748679033029
