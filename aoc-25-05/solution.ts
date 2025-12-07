@@ -2,13 +2,13 @@ import { sum } from '../utils';
 import type { Range, Ranges, Id, Ids } from './types';
 
 export const parseRanges = (input: string): Ranges =>
-  input.trim().split('\n\n')[0].split('\n').map(line => {
+  (input.trim().split('\n\n')[0] ?? '').split('\n').map(line => {
     const [start, end] = line.split('-').map(Number);
-    return [start, end] as Range;
+    return [start ?? 0, end ?? 0] as Range;
   });
 
 export const parseIds = (input: string): Ids =>
-  input.trim().split('\n\n')[1].split('\n').map(Number);
+  (input.trim().split('\n\n')[1] ?? '').split('\n').map(Number);
 
 export const isInRange = (id: Id, ranges: Ranges): boolean =>
   ranges.some(([start, end]) => id >= start && id <= end);

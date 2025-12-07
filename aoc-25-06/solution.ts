@@ -19,7 +19,7 @@ export const findProblemRanges = (lines: string[], width: number): ProblemRange[
 
 export const parseInput = (input: string): ParsedInput => {
   const lines = parseLines(input);
-  const operatorLine = lines[lines.length - 1], numberLines = lines.slice(0, -1);
+  const operatorLine = lines[lines.length - 1] ?? '', numberLines = lines.slice(0, -1);
   const width = Math.max(...lines.map(l => l.length));
   const problemRanges = findProblemRanges(lines, width);
   const paddedNumberLines = numberLines.map(l => l.padEnd(width));
@@ -40,7 +40,7 @@ export const parseProblemsPart2 = ({ paddedNumberLines, operatorLine, problemRan
   problemRanges.map(([colStart, colEnd]) => {
     const numbers: number[] = [];
     for (let col = colStart; col < colEnd; col++) {
-      const digitStr = paddedNumberLines.map(line => line[col]).filter(c => c >= '0' && c <= '9').join('');
+      const digitStr = paddedNumberLines.map(line => line[col]).filter((c): c is string => c !== undefined && c >= '0' && c <= '9').join('');
       if (digitStr.length > 0) numbers.push(parseInt(digitStr, 10));
     }
     return { numbers, operator: getOperator(operatorLine, colStart, colEnd) };

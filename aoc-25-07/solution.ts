@@ -7,7 +7,7 @@ export const parseInput = (input: string): Manifold => {
   return {
     grid,
     width: Math.max(...grid.map((line: string): number => line.length)),
-    startCol: grid[0].indexOf('S')
+    startCol: (grid[0] ?? '').indexOf('S')
   };
 };
 

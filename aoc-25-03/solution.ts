@@ -7,7 +7,7 @@ export const findMaxJoltage = (bank: Bank, numDigitsToSelect: DigitCount): Jolta
     const endIdx = bank.length - (numDigitsToSelect - i);
     let bestDigit = -1, bestDigitIdx = -1;
     for (let j = startIdx; j <= endIdx; j++) {
-      const digit = parseInt(bank[j]);
+      const digit = parseInt(bank[j] ?? '0');
       if (digit > bestDigit) { bestDigit = digit; bestDigitIdx = j; }
     }
     result += bestDigit.toString();
