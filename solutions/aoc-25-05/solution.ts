@@ -1,4 +1,4 @@
-import { sum } from '../utils';
+import { sum } from '../../utils';
 import type { Range, Ranges, Id, Ids } from './types';
 
 export const parseRanges = (input: string): Ranges =>

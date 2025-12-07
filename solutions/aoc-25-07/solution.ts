@@ -1,5 +1,5 @@
 import type { Column, TimelineCount, Grid, Manifold, Beams, RowResult, SimState, SimResult } from './types.ts';
-import { parseLines, sumMapValues } from '../utils';
+import { parseLines, sumMapValues } from '../../utils';
 
 /** Parse input string into a Manifold structure, finding grid dimensions and start position */
 export const parseInput = (input: string): Manifold => {

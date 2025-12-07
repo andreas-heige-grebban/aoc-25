@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parseInput, simulate } from './solution';
-import { timed, printTiming } from '../utils';
+import { timed, printTiming } from '../../utils';
 
 const main = (): void => {
   const totalStart = performance.now();

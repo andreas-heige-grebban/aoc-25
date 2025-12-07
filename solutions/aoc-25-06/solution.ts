@@ -1,4 +1,4 @@
-import { sum, product, parseLines } from '../utils';
+import { sum, product, parseLines } from '../../utils';
 import type { Operator, Problem, Problems, ProblemRange, ParsedInput } from './types';
 
 export const findProblemRanges = (lines: string[], width: number): ProblemRange[] => {

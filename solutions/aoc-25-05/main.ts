@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { parseRanges, parseIds, countFreshAvailable, countAllFresh } from './solution';
-import { timed, printTiming } from '../utils';
+import { timed, printTiming } from '../../utils';
 
 const main = (): void => {
   const totalStart = performance.now();

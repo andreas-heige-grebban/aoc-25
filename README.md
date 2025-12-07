@@ -5,14 +5,15 @@ Solutions for [Advent of Code 2025](https://adventofcode.com/2025) in TypeScript
 ## Structure
 
 ```
-aoc-25-XX/          # Each day's solution
-├── main.ts|go      # Entry point
-├── solution.ts     # Core logic (TS)
-├── types.ts        # Type definitions (TS)
-├── solution.test.ts|main_test.go
-└── input.txt
-utils/              # Shared TS utilities
-docs/               # Solution notes
+solutions/
+└── aoc-25-XX/        # Each day's solution
+    ├── main.ts|go    # Entry point
+    ├── solution.ts   # Core logic (TS)
+    ├── types.ts      # Type definitions (TS)
+    ├── solution.test.ts|main_test.go
+    └── input.txt
+utils/                # Shared TS utilities
+docs/                 # Solution notes
 ```
 
 ## Setup
@@ -26,10 +27,10 @@ npm install
 
 ```bash
 # Run a day's solution (TS)
-cd aoc-25-xx && npx tsx main.ts
+cd solutions/aoc-25-xx && npx tsx main.ts
 
 # Run a day's solution (Go)
-cd aoc-25-xx && go run main.go
+cd solutions/aoc-25-xx && go run main.go
 
 # Run all tests (TS + Go)
 npm run test:all
