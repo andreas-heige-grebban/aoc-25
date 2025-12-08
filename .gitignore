@@ -6,6 +6,7 @@ solutions/aoc-25-04/main
 
 # Compiled JS
 solutions/**/*.js
+utils/*.js
 
 # VS Code
 .vscode/
