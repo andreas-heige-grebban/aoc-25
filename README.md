@@ -53,6 +53,7 @@ npm run test:go
 | 5   | TS       | ✅     | ✅     |
 | 6   | TS       | ✅     | ✅     |
 | 7   | TS       | ✅     | ✅     |
+| 8   | TS       | ✅     | ✅     |
 
 ## Tech Stack
 
