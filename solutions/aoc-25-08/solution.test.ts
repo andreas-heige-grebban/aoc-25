@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseInput, distance, generatePairs, createUnionFind, find, union, getCircuitSizes, solve } from './solution';
+import { parseInput, distance, generatePairs, createUnionFind, find, union, getCircuitSizes, solve, part2 } from './solution';
 import { example } from './fixtures';
 import type { Point } from './types';
 
@@ -53,4 +53,8 @@ describe('getCircuitSizes', () => {
 
 describe('solve', () => {
   it('example with 10 connections', () => expect(solve(example, 10)).toBe(40));
+});
+
+describe('part2', () => {
+  it('example - last connection X product', () => expect(part2(example)).toBe(25272));
 });

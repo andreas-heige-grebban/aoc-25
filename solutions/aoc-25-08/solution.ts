@@ -1,8 +1,8 @@
-import type { Point, BoxPair, UnionFind, BoxIndex } from './types';
+import type { Point, BoxPair, UnionFind, BoxIndex, PuzzleInput, ConnectionCount, CircuitSize, ProductResult } from './types';
 import { parseLines } from '../../utils';
 
 /** Parse input into array of 3D points */
-export const parseInput = (input: string): Point[] =>
+export const parseInput = (input: PuzzleInput): Point[] =>
   parseLines(input).map(line => {
     const [x, y, z] = line.split(',').map(Number);
     return { x: x ?? 0, y: y ?? 0, z: z ?? 0 };
@@ -49,14 +49,14 @@ export const union = (unionFind: UnionFind, nodeA: BoxIndex, nodeB: BoxIndex): b
 };
 
 /** Get sizes of all circuits */
-export const getCircuitSizes = (unionFind: UnionFind): number[] =>
+export const getCircuitSizes = (unionFind: UnionFind): CircuitSize[] =>
   [...unionFind.parent.map((_, index) => find(unionFind, index)).reduce(
     (counts, root) => counts.set(root, (counts.get(root) ?? 0) + 1),
-    new Map<number, number>()
+    new Map<BoxIndex, CircuitSize>()
   ).values()].sort((a, b) => b - a);
 
 /** Connect n closest pairs and return product of top 3 circuit sizes */
-export const solve = (input: string, connectionCount: number): number => {
+export const solve = (input: PuzzleInput, connectionCount: ConnectionCount): ProductResult => {
   const points = parseInput(input);
   const unionFind = createUnionFind(points.length);
   generatePairs(points).slice(0, connectionCount).forEach(pair => union(unionFind, pair.i, pair.j));
@@ -64,4 +64,32 @@ export const solve = (input: string, connectionCount: number): number => {
 };
 
 /** Part 1: Connect 1000 pairs, multiply top 3 circuit sizes */
-export const part1 = (input: string): number => solve(input, 1000);
+export const part1 = (input: PuzzleInput): ProductResult => solve(input, 1000);
+
+/**
+ * Part 2: Find last pair that connects all boxes into one circuit, multiply X coords
+ */
+export const part2 = (input: PuzzleInput): ProductResult => {
+  const points = parseInput(input);
+  const unionFind = createUnionFind(points.length);
+  const sortedPairs = generatePairs(points);
+
+  let circuitsRemaining = points.length;
+
+  for (const { i: boxIndexA, j: boxIndexB } of sortedPairs) {
+    const mergedTwoCircuits = union(unionFind, boxIndexA, boxIndexB);
+
+    if (mergedTwoCircuits) {
+      circuitsRemaining--;
+
+      const allConnected = circuitsRemaining === 1;
+      if (allConnected) {
+        const xCoordA = points[boxIndexA]?.x ?? 0;
+        const xCoordB = points[boxIndexB]?.x ?? 0;
+        return xCoordA * xCoordB;
+      }
+    }
+  }
+
+  return 0;
+};

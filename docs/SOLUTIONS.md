@@ -249,3 +249,55 @@ Starting from Part 2, we adopted Test-Driven Development (TDD) for this reposito
 - Part 2: 5748679033029
 
 </details>
+
+---
+
+# AOC 2025 Day 8: Junction Boxes
+
+## Problem
+Connect 3D junction boxes using the Union-Find algorithm. Given junction box coordinates in 3D space, connect the closest pairs and analyze the resulting circuits.
+
+## Solution
+TypeScript solution using [Union-Find (Disjoint Set Union)](https://javascript.plainenglish.io/understanding-union-find-disjoint-set-union-with-javascript-9e7a23eecf30) data structure with path compression and union by rank optimizations.
+
+**Part 1**: Connect 1000 closest pairs, multiply sizes of top 3 circuits
+- Parse 3D coordinates (x,y,z) for each junction box
+- Generate all pairs with Euclidean distances, sorted ascending
+- Process first 1000 pairs (even if some are already connected)
+- Use Union-Find to track connected components (circuits)
+- Return product of the three largest circuit sizes
+
+**Part 2**: Find the last pair that connects all boxes into one circuit
+- Continue connecting pairs until all boxes form a single circuit
+- Track when `circuitsRemaining` drops to 1
+- Return product of X coordinates of the final connecting pair
+
+## Key Algorithms
+- **Euclidean Distance in 3D**: $d = \sqrt{(x_2-x_1)^2 + (y_2-y_1)^2 + (z_2-z_1)^2}$
+  - Measures straight-line distance between two points in 3D space
+  - Used to sort all junction box pairs by proximity
+  - Implemented as `Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2 + (b.z - a.z) ** 2)`
+- **Union-Find with Path Compression**: `find()` flattens tree on each lookup
+  - Each node points to its parent; root points to itself
+  - Path compression: during `find()`, make all nodes point directly to root
+  - Reduces future lookup time from O(n) to nearly O(1) amortized
+- **Union by Rank**: Smaller tree attached under larger tree root
+  - Track "rank" (approximate depth) of each tree
+  - Always attach smaller tree under larger to keep trees shallow
+  - Combined with path compression: O(α(n)) per operation (inverse Ackermann, effectively constant)
+
+## Implementation Notes
+- Strict domain types: `Point`, `BoxIndex`, `BoxPair`, `UnionFind`, `PuzzleInput`, `ConnectionCount`, `CircuitSize`, `ProductResult`
+- Immutable types with `Readonly<>` for `Point` and `BoxPair`
+- Functional style: `flatMap`, `reduce`, destructuring, single-expression functions
+- Test fixtures extracted to separate `fixtures.ts` file
+- 12 unit tests covering all solution functions
+
+## Answers
+<details>
+<summary>Today's Results</summary>
+
+- Part 1: 62186
+- Part 2: 8420405530
+
+</details>

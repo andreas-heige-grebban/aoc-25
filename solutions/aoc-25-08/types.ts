@@ -24,7 +24,19 @@ export type BoxPair = Readonly<{
  */
 export type UnionFind = {
   /** Maps each node to its parent (or itself if root) */
-  parent: number[];
+  parent: BoxIndex[];
   /** Rank for union by rank optimization */
   rank: number[];
 };
+
+/** Raw puzzle input string */
+export type PuzzleInput = string;
+
+/** Number of wire connections to make */
+export type ConnectionCount = number;
+
+/** Circuit size (number of boxes in a circuit) */
+export type CircuitSize = number;
+
+/** Product result for puzzle answers */
+export type ProductResult = number;
