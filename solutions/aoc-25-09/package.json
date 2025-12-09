@@ -1,0 +1,12 @@
+{
+  "name": "aoc-25-09",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx main.ts",
+    "start:tsgo": "tsgo -p tsconfig.tsgo.json && node dist/solutions/aoc-25-08/main.js"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2"
+  }
+}
