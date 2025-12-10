@@ -301,3 +301,94 @@ TypeScript solution using [Union-Find (Disjoint Set Union)](https://javascript.p
 - Part 2: 8420405530
 
 </details>
+
+---
+
+# AOC 2025 Day 9: Movie Theater
+
+## Problem
+Find the largest rectangle that can be formed using red floor tiles as corners. The Elves are renovating a movie theater and need to place the largest possible screen on a wall, constrained by the red tile layout.
+
+**Part 1**: Find the largest rectangle area using any two red tiles as opposite corners
+**Part 2**: Find the largest rectangle that contains only red and green tiles (green tiles connect the red tiles in a closed loop)
+
+## Solution
+TypeScript solution with an important performance optimization story.
+
+**Part 1**: O(n²) brute force - check all red tile pairs
+- Parse input into array of red tile coordinates (x,y)
+- Check all pairs of red tiles as opposite corners of rectangles
+- Rectangle area (inclusive): `(|x2-x1|+1) × (|y2-y1|+1)`
+- Track maximum area found
+
+**Part 2**: Valid rectangles only (must contain only red/green tiles)
+- Green tiles form the edges connecting red tiles in a closed loop
+- A rectangle is "valid" if all tiles inside are either red or green (on the polygon)
+- Find maximum area among all valid rectangles
+
+### 🚀 Critical Performance Optimization
+
+The naive Part 2 solution ran for **3+ hours** on real input and never finished!
+
+**The Problem**: With 495 red tiles having coordinates up to ~100,000, rectangles could contain millions of tiles. Checking every tile:
+```typescript
+// SLOW: O(width × height) per rectangle - millions of tiles!
+for (let x = minX; x <= maxX; x++) {
+  for (let y = minY; y <= maxY; y++) {
+    if (!isInsideOrOnBoundary(boundarySet, x, y)) return false;
+  }
+}
+```
+
+**The Solution**: Edge crossing detection - instead of checking every tile, check if any polygon edge crosses through the rectangle's interior:
+
+```typescript
+// FAST: O(n) where n = number of polygon edges
+// 1. Check 4 corners are inside polygon (ray casting)
+if (!isInsideOrOnBoundary(..., corner1)) return false;
+if (!isInsideOrOnBoundary(..., corner2)) return false;
+// ... (4 corners total)
+
+// 2. Check no vertical polygon segments cross rectangle interior
+for (const segment of verticalSegments) {
+  if (segmentCrossesRectangleInterior(segment, rect)) return false;
+}
+
+// 3. Check no horizontal polygon segments cross rectangle interior
+for (const segment of horizontalSegments) {
+  if (segmentCrossesRectangleInterior(segment, rect)) return false;
+}
+```
+
+**Key Insight**: If all 4 corners are inside the polygon AND no polygon edges cross through the rectangle, then the entire rectangle must be inside the polygon. This reduces complexity from O(width × height) to O(n) where n is the number of polygon edges.
+
+**Result**: **3+ hours → 0.46 seconds** ⚡
+
+### Algorithm Details
+
+**Ray Casting (Point-in-Polygon)**:
+- Cast a horizontal ray from the point to infinity
+- Count how many polygon edges the ray crosses
+- Odd count = inside, even count = outside
+- Special handling for vertices using "lower endpoint" rule
+
+**Edge Crossing Detection**:
+- Pre-build lists of vertical and horizontal polygon segments
+- For each segment, check if it crosses the rectangle's interior (not just corners/edges)
+- A vertical segment at x crosses if: `minX < x < maxX` and segment Y range overlaps rectangle Y range
+- Similarly for horizontal segments
+
+## Implementation Notes
+- Types: `Point/RedTile`, `TilePair`, `Area`, `PuzzleInput`, `Coordinate`
+- Helper functions: `getLineTiles`, `getEdgeTiles`, `buildBoundarySet`, `buildVerticalSegments`, `buildHorizontalSegments`, `isInsideOrOnBoundary`
+- 11 unit tests covering all functions
+- Total execution time: 0.46 seconds for both parts
+
+## Answers
+<details>
+<summary>Today's Results</summary>
+
+- Part 1: 4776487744
+- Part 2: 1560299548
+
+</details>
