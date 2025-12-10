@@ -1,19 +1,28 @@
-import type { Machine, PuzzleInput, TargetPattern, Button, PressCount, LightIndex } from './types';
+import type {
+  Machine, PuzzleInput, TargetPattern, Button, PressCount, LightIndex,
+  JoltageRequirements, RawInput, InputLine, DiagramString
+} from './types';
+import { solveLinearSystem } from './linear-solver';
 
+const LIGHT_ON = '#';
 
 /** Parse indicator light diagram [.##.] into boolean array */
-export const parseTargetPattern = (diagram: string): TargetPattern => {
+export const parseTargetPattern = (diagram: DiagramString): TargetPattern => {
   const withoutBrackets = diagram.slice(1, -1);
-  return [...withoutBrackets].map(lightChar => lightChar === '#');
+  return [...withoutBrackets].map(lightChar => lightChar === LIGHT_ON);
 };
 
 /** Parse button schematics from string containing (x,y) (z) patterns */
-export const parseButtons = (buttonsStr: string): Button[] =>
+export const parseButtons = (buttonsStr: InputLine): Button[] =>
   [...buttonsStr.matchAll(/\(([^)]+)\)/g)]
     .map(([, indices]) => indices!.split(',').map(Number) as LightIndex[]);
 
+/** Parse joltage requirements {3,5,4,7} into number array */
+export const parseJoltage = (joltageStr: DiagramString): JoltageRequirements =>
+  joltageStr.slice(1, -1).split(',').map(Number);
+
 /** Parse a single machine line */
-export const parseMachine = (line: string): Machine => {
+export const parseMachine = (line: InputLine): Machine => {
   const targetMatch = line.match(/\[[.#]+\]/);
   const target = parseTargetPattern(targetMatch![0]!);
   
@@ -23,17 +32,26 @@ export const parseMachine = (line: string): Machine => {
   const buttonsStr = line.slice(afterBracket, beforeCurly);
   const buttons = parseButtons(buttonsStr);
   
-  return { target, buttons };
+  // Extract joltage requirements
+  const joltageMatch = line.match(/\{[^}]+\}/);
+  const joltage = parseJoltage(joltageMatch![0]!);
+  
+  return { target, buttons, joltage };
 };
 
 /** Parse full puzzle input */
-export const parseInput = (input: string): PuzzleInput =>
+export const parseInput = (input: RawInput): PuzzleInput =>
   input.trim().split('\n').map(parseMachine);
 
+// PART 1: TOGGLE LIGHTS (GF(2) - XOR PROBLEM)
+
 /**
- * Solve for minimum button presses using brute force over GF(2).
- * Since pressing a button twice cancels out, we only need to try
- * each button 0 or 1 times. Try all 2^n combinations.
+ * Solve for minimum button presses to match target light pattern.
+ * 
+ * Since pressing a button twice cancels out (XOR/toggle), we work over GF(2).
+ * Each button either pressed (1) or not (0). Try all 2^n combinations.
+ * 
+ * Time: O(2^n * m) where n = buttons, m = lights
  */
 export const solveMachine = (machine: Machine): PressCount => {
   const { target, buttons } = machine;
@@ -42,26 +60,25 @@ export const solveMachine = (machine: Machine): PressCount => {
   
   let minPresses = Infinity;
   
-  // Try all 2^numButtons combinations
-  for (let mask = 0; mask < (1 << numButtons); mask++) {
-    // Simulate this combination of button presses
-    const state = new Array(numLights).fill(false);
-    let presses = 0;
+  // Try all 2^numButtons combinations (bitmask enumeration)
+  for (let buttonMask = 0; buttonMask < (1 << numButtons); buttonMask++) {
+    const lightState = new Array<boolean>(numLights).fill(false);
+    let pressCount = 0;
     
-    for (let buttonIndex = 0; buttonIndex < numButtons; buttonIndex++) {
-      if (mask & (1 << buttonIndex)) {
-        presses++;
-        // Toggle all lights this button controls
-        for (const lightIndex of buttons[buttonIndex]!) {
-          state[lightIndex] = !state[lightIndex];
-        }
+    for (let buttonIdx = 0; buttonIdx < numButtons; buttonIdx++) {
+      const buttonPressed = (buttonMask & (1 << buttonIdx)) !== 0;
+      if (!buttonPressed) continue;
+      
+      pressCount++;
+      // Toggle all lights controlled by this button
+      for (const lightIdx of buttons[buttonIdx]!) {
+        lightState[lightIdx] = !lightState[lightIdx];
       }
     }
     
-    // Check if state matches target
-    const matches = state.every((light, index) => light === target[index]);
-    if (matches) {
-      minPresses = Math.min(minPresses, presses);
+    const matchesTarget = lightState.every((light, idx) => light === target[idx]);
+    if (matchesTarget) {
+      minPresses = Math.min(minPresses, pressCount);
     }
   }
   
@@ -71,3 +88,31 @@ export const solveMachine = (machine: Machine): PressCount => {
 /** Part 1: Sum of minimum button presses for all machines */
 export const part1 = (machines: PuzzleInput): PressCount =>
   machines.reduce((sum, machine) => sum + solveMachine(machine), 0) as PressCount;
+
+// PART 2: JOLTAGE COUNTERS (INTEGER LINEAR PROGRAMMING)
+
+/**
+ * Solve for minimum button presses to reach joltage targets.
+ * 
+ * Each button press increments counters (additive, not toggle).
+ * This is an Integer Linear Programming problem:
+ *   minimize: sum(x_i)
+ *   subject to: Ax = b, x >= 0, x integer
+ * 
+ * Solution approach:
+ * 1. Gaussian elimination with exact rational arithmetic → RREF
+ * 2. Identify pivot (bound) and free variables
+ * 3. If unique solution: check non-negativity
+ * 4. If free variables: search over free variable space with pruning
+ * 
+ * Time: O(m*n^2) for RREF + O(maxVal^k) for k free variables
+ */
+export const solveMachineJoltage = (machine: Machine): PressCount => {
+  const { buttons, joltage: targets } = machine;
+  const result = solveLinearSystem(buttons, targets);
+  return result as PressCount;
+};
+
+/** Part 2: Sum of minimum button presses for joltage configuration */
+export const part2 = (machines: PuzzleInput): PressCount =>
+  machines.reduce((sum, machine) => sum + solveMachineJoltage(machine), 0) as PressCount;

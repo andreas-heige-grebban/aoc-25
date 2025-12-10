@@ -392,3 +392,121 @@ for (const segment of horizontalSegments) {
 - Part 2: 1560299548
 
 </details>
+
+---
+
+# AOC 2025 Day 10: Factory
+
+## Problem
+Solve two variants of button-pressing puzzles on factory machines:
+1. **Part 1**: Toggle lights to match a target pattern using minimum button presses
+2. **Part 2**: Increment counters to reach joltage targets using minimum button presses
+
+Each machine has buttons that affect multiple lights/counters simultaneously.
+
+## Mathematical Background
+
+### Part 1: GF(2) - Galois Field of Two Elements
+
+**GF(2)** is the simplest finite field, containing only two elements: {0, 1}. Operations work like this:
+- **Addition**: XOR (0+0=0, 0+1=1, 1+0=1, 1+1=0)
+- **Multiplication**: AND (0×0=0, 0×1=0, 1×0=0, 1×1=1)
+
+Light toggling is XOR: pressing a button twice cancels out (1⊕1=0). This means each button is either pressed 0 or 1 times - there's no benefit to pressing more.
+
+With n buttons where each can be pressed 0 or 1 times, there are exactly **2^n possible combinations**. We use a bitmask to enumerate all of them. This brute force approach is $O(2^n)$ but works well for small n (≤20 buttons).
+
+### Part 2: Integer Linear Programming (ILP)
+
+Part 2 is fundamentally different - counters are **additive** (each press adds 1), not toggles. This is an **Integer Linear Programming** problem:
+
+$$\text{minimize: } \sum_{i} x_i$$
+$$\text{subject to: } Ax = b, \quad x \geq 0, \quad x \in \mathbb{Z}$$
+
+Where:
+- $x_i$ = number of presses for button $i$
+- $A$ = binary matrix (1 if button $j$ affects counter $i$)
+- $b$ = target joltage values
+
+### Gaussian Elimination with Rational Arithmetic
+
+We solve this using **Gaussian elimination** to convert the system to **Reduced Row Echelon Form (RREF)**:
+
+1. **Build augmented matrix** $[A | b]$
+2. **Forward elimination**: Create upper triangular form
+3. **Back substitution**: Reduce to RREF with leading 1s
+
+**Critical insight**: Using floating point arithmetic causes rounding errors that corrupt solutions. We use **exact rational arithmetic** (fractions as numerator/denominator pairs) to maintain precision.
+
+### Free Variables and Search Space
+
+After RREF, variables split into:
+- **Pivot (bound) variables**: Determined by other variables
+- **Free variables**: Can take any value
+
+If the system has $k$ free variables, we search over all non-negative integer values for those free variables, computing bound variables via back-substitution. We minimize the total sum while ensuring all variables remain non-negative integers.
+
+## Solution
+
+### Part 1: Light Toggle (GF(2) Brute Force)
+
+```
+Input: [.##.] (0,1) (1,2) (3)
+Target: [off, on, on, off]
+Buttons: 
+  - Button 0 toggles lights 0,1
+  - Button 1 toggles lights 1,2
+  - Button 2 toggles light 3
+```
+
+Algorithm:
+1. Try all $2^n$ button combinations using bitmask enumeration
+2. For each combination, simulate the XOR toggles
+3. Track minimum presses that achieve target pattern
+
+**Time Complexity**: $O(2^n \cdot m)$ where n=buttons, m=lights
+- $2^n$ = number of button combinations to try (each button pressed or not)
+- $m$ = work per combination (check each light's state)
+- Example: 10 buttons, 8 lights → $2^{10} \cdot 8 = 8192$ operations
+
+### Part 2: Counter Increment (Gaussian Elimination + ILP Search)
+
+```
+Input: [.##.] (0,1) (1,2) (3) {3,5,4,7}
+Joltage targets: counter[0]=3, counter[1]=5, counter[2]=4, counter[3]=7
+```
+
+Algorithm:
+1. **Build augmented matrix** from button-counter relationships
+2. **Gaussian elimination** with exact rational arithmetic → RREF
+3. **Identify free variables** (columns without pivots)
+4. **If no free variables**: Direct solution via back-substitution
+5. **If free variables exist**: Search over free variable space with pruning
+6. **Verify solutions** against original constraints (guards against floating point edge cases)
+
+**Time Complexity**: $O(m \cdot n^2)$ for RREF + $O(maxVal^k)$ for $k$ free variables
+- **RREF phase**: $O(m \cdot n^2)$
+  - $m$ = rows (counters), $n$ = columns (buttons)
+  - For each of $n$ columns, we do $O(m)$ row operations, each touching $O(n)$ elements
+- **Search phase**: $O(maxVal^k)$ where $k$ = number of free variables
+  - $maxVal$ = search range (typically $2 \times \max(targets)$)
+  - $k$ = variables not determined by RREF (usually 0-3 for this puzzle)
+  - Example: 3 free vars, maxVal=200 → $200^3 = 8M$ combinations
+- **Total**: Dominated by search phase when $k > 0$
+
+## Implementation Notes
+
+- **Parsing**: Regex-based extraction of `[.##.]`, `(x,y)`, and `{a,b,c}` patterns
+- **Part 1**: Brute force bitmask enumeration over GF(2)
+- **Part 2**: Gaussian elimination with exact fractions, then ILP search on free variables
+- **Verification**: All computed solutions are verified against original constraints
+- **13 unit tests** covering parsing, solving, and both parts
+
+## Answers
+<details>
+<summary>Today's Results</summary>
+
+- Part 1: 527 (0.02s)
+- Part 2: 19810 (~3s)
+
+</details>
