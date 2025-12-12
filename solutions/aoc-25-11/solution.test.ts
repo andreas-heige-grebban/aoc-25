@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseInput, parseLine, countPaths, part1 } from './solution';
+import { parseInput, parseLine, countPaths, part1, part2 } from './solution';
 import type { DeviceName, RawInput } from './types';
 import { readFileSync } from 'fs';
 
@@ -70,6 +70,37 @@ b: out` as RawInput);
       const graph = parseInput(input);
       const result = part1(graph);
       console.log('Part 1 answer:', result);
+      expect(result).toBeGreaterThan(0);
+    });
+  });
+
+  describe('part2', () => {
+    const part2Example = `svr: aaa bbb
+aaa: fft
+fft: ccc
+bbb: tty
+tty: ccc
+ccc: ddd eee
+ddd: hub
+hub: fff
+eee: dac
+dac: fff
+fff: ggg hhh
+ggg: out
+hhh: out` as RawInput;
+
+    it('should solve part2 example - expect 2', () => {
+      const graph = parseInput(part2Example);
+      expect(part2(graph)).toBe(2);
+    });
+  });
+
+  describe('part2 with real input', () => {
+    it('should solve puzzle input', () => {
+      const input = readFileSync('./solutions/aoc-25-11/input.txt', 'utf8') as RawInput;
+      const graph = parseInput(input);
+      const result = part2(graph);
+      console.log('Part 2 answer:', result);
       expect(result).toBeGreaterThan(0);
     });
   });

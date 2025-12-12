@@ -510,3 +510,59 @@ Algorithm:
 - Part 2: 19810 (~3s)
 
 </details>
+
+---
+
+# AOC 2025 Day 11: Reactor
+
+## Problem
+Navigate a directed graph of devices connecting a server rack to a reactor. Data flows from device to device through output connections.
+
+**Part 1**: Count all paths from `you` to `out`
+**Part 2**: Count paths from `svr` to `out` that visit **both** `dac` AND `fft` (in any order)
+
+## Solution
+
+### Part 1: Path Counting with Memoization
+
+This is a classic **dynamic programming** problem on a DAG (Directed Acyclic Graph):
+
+$$\text{pathCount}(node) = \sum_{child \in outputs(node)} \text{pathCount}(child)$$
+
+Base case: $\text{pathCount}(out) = 1$
+
+**Memoization** is crucial because multiple devices can lead to the same device, creating overlapping subproblems. Without it, the same subgraph would be traversed exponentially many times.
+
+### Part 2: Constrained Path Counting
+
+A path from `svr` to `out` that visits **both** `dac` and `fft` must visit them in one of two orderings (since data flows one direction):
+
+1. **dac first, then fft**: `svr → ... → dac → ... → fft → ... → out`
+2. **fft first, then dac**: `svr → ... → fft → ... → dac → ... → out`
+
+Using the **multiplicative principle**, the total count is:
+
+$$\text{paths}(svr \to dac) \times \text{paths}(dac \to fft) \times \text{paths}(fft \to out)$$
+$$+ \text{paths}(svr \to fft) \times \text{paths}(fft \to dac) \times \text{paths}(dac \to out)$$
+
+Each sub-path count is computed independently using the same memoized path counting algorithm.
+
+**Time Complexity**: $O(V + E)$ where $V$ = devices, $E$ = connections
+- Each device is visited at most once per `countPaths` call due to memoization
+- The 6 sub-path computations in Part 2 share the same graph but use separate memo caches
+
+## Implementation Notes
+
+- **Graph representation**: Adjacency list via `Map<DeviceName, DeviceName[]>`
+- **Branded types**: `DeviceName`, `RawInput` for type safety
+- **Functional style**: Single recursive function with memoization
+- **10 unit tests** covering parsing, path counting, and both parts
+
+## Answers
+<details>
+<summary>Today's Results</summary>
+
+- Part 1: 497 (0.000064s)
+- Part 2: 358564784931864 (0.000538s)
+
+</details>
