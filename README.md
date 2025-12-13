@@ -44,18 +44,8 @@ npm run test:go
 
 ## Progress
 
-| Day | Language | Part 1 | Part 2 |
-|-----|----------|--------|--------|
-| 1   | Go       | ✅     | ✅     |
-| 2   | Go       | ✅     | ✅     |
-| 3   | TS       | ✅     | ✅     |
-| 4   | Go       | ✅     | ✅     |
-| 5   | TS       | ✅     | ✅     |
-| 6   | TS       | ✅     | ✅     |
-| 7   | TS       | ✅     | ✅     |
-| 8   | TS       | ✅     | ✅     |
-| 9   | TS       | ✅     | ✅     |
-| 10  | TS       | ✅     | ✅     |
+<img width="657" height="613" alt="image" src="https://github.com/user-attachments/assets/1a946767-ba66-4608-8414-073192b1ada0" />
+
 
 ## Tech Stack
 
